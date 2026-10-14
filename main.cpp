@@ -30,20 +30,43 @@ private:
 
 public:
     Fraction() : numerator(0), denominator(1) {}
+    explicit Fraction(int n) : numerator(n), denominator(1) {}
 
-    explicit Fraction(int number)
-        : numerator(number), denominator(1) {}
-
-    Fraction(int num, int den)
-        : numerator(num), denominator(den)
+    Fraction(int n, int d) : numerator(n), denominator(d)
     {
         reduce();
     }
 
     Fraction(const Fraction& other)
         : numerator(other.numerator),
-          denominator(other.denominator)
+          denominator(other.denominator) {}
+
+    Fraction& operator++()
     {
+        numerator += denominator;
+        reduce();
+        return *this;
+    }
+
+    Fraction operator++(int)
+    {
+        Fraction old(*this);
+        ++(*this);
+        return old;
+    }
+
+    Fraction& operator--()
+    {
+        numerator -= denominator;
+        reduce();
+        return *this;
+    }
+
+    Fraction operator--(int)
+    {
+        Fraction old(*this);
+        --(*this);
+        return old;
     }
 
     friend ostream& operator<<(ostream& out, const Fraction& f)
@@ -57,11 +80,15 @@ int main()
 {
     setlocale(LC_ALL, "");
 
-    Fraction a(2, 4);
-    Fraction b(a);
+    Fraction d(3, 4);
 
-    cout << "Исходная дробь: " << a << '\n';
-    cout << "Копия дроби: " << b << '\n';
+    cout << "Исходная дробь: " << d << '\n';
+    cout << "Префиксный ++d: " << ++d << '\n';
+    cout << "Постфиксный d++: " << d++ << '\n';
+    cout << "После d++: " << d << '\n';
+    cout << "Префиксный --d: " << --d << '\n';
+    cout << "Постфиксный d--: " << d-- << '\n';
+    cout << "После d--: " << d << '\n';
 
     return 0;
 }
