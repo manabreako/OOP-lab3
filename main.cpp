@@ -105,6 +105,30 @@ public:
         return *this;
     }
 
+    friend Fraction operator+(Fraction left, const Fraction& right)
+    {
+        left += right;
+        return left;
+    }
+
+    friend Fraction operator-(Fraction left, const Fraction& right)
+    {
+        left -= right;
+        return left;
+    }
+
+    friend Fraction operator*(Fraction left, const Fraction& right)
+    {
+        left *= right;
+        return left;
+    }
+
+    friend Fraction operator/(Fraction left, const Fraction& right)
+    {
+        left /= right;
+        return left;
+    }
+
     friend ostream& operator<<(ostream& out, const Fraction& f)
     {
         out << f.numerator << "/" << f.denominator;
@@ -116,23 +140,13 @@ int main()
 {
     setlocale(LC_ALL, "");
 
+    Fraction a(1, 2);
     Fraction b(1, 3);
-    Fraction c(1, 2);
 
-    c += b;
-    cout << "После += : " << c << '\n';
-
-    c = Fraction(1, 2);
-    c -= b;
-    cout << "После -= : " << c << '\n';
-
-    c = Fraction(1, 2);
-    c *= b;
-    cout << "После *= : " << c << '\n';
-
-    c = Fraction(1, 2);
-    c /= b;
-    cout << "После /= : " << c << '\n';
+    cout << a << " + " << b << " = " << a + b << '\n';
+    cout << a << " - " << b << " = " << a - b << '\n';
+    cout << a << " * " << b << " = " << a * b << '\n';
+    cout << a << " / " << b << " = " << a / b << '\n';
 
     return 0;
 }
