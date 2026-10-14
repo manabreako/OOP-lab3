@@ -105,28 +105,41 @@ public:
         return *this;
     }
 
-    friend Fraction operator+(Fraction left, const Fraction& right)
+    friend Fraction operator+(Fraction a, const Fraction& b) { return a += b; }
+    friend Fraction operator-(Fraction a, const Fraction& b) { return a -= b; }
+    friend Fraction operator*(Fraction a, const Fraction& b) { return a *= b; }
+    friend Fraction operator/(Fraction a, const Fraction& b) { return a /= b; }
+
+    friend bool operator==(const Fraction& a, const Fraction& b)
     {
-        left += right;
-        return left;
+        return a.numerator == b.numerator &&
+               a.denominator == b.denominator;
     }
 
-    friend Fraction operator-(Fraction left, const Fraction& right)
+    friend bool operator!=(const Fraction& a, const Fraction& b)
     {
-        left -= right;
-        return left;
+        return !(a == b);
     }
 
-    friend Fraction operator*(Fraction left, const Fraction& right)
+    friend bool operator<(const Fraction& a, const Fraction& b)
     {
-        left *= right;
-        return left;
+        return 1LL * a.numerator * b.denominator <
+               1LL * b.numerator * a.denominator;
     }
 
-    friend Fraction operator/(Fraction left, const Fraction& right)
+    friend bool operator>(const Fraction& a, const Fraction& b)
     {
-        left /= right;
-        return left;
+        return b < a;
+    }
+
+    friend bool operator<=(const Fraction& a, const Fraction& b)
+    {
+        return !(a > b);
+    }
+
+    friend bool operator>=(const Fraction& a, const Fraction& b)
+    {
+        return !(a < b);
     }
 
     friend ostream& operator<<(ostream& out, const Fraction& f)
@@ -143,10 +156,13 @@ int main()
     Fraction a(1, 2);
     Fraction b(1, 3);
 
-    cout << a << " + " << b << " = " << a + b << '\n';
-    cout << a << " - " << b << " = " << a - b << '\n';
-    cout << a << " * " << b << " = " << a * b << '\n';
-    cout << a << " / " << b << " = " << a / b << '\n';
+    cout << boolalpha;
+    cout << "a == b: " << (a == b) << '\n';
+    cout << "a != b: " << (a != b) << '\n';
+    cout << "a < b:  " << (a < b) << '\n';
+    cout << "a > b:  " << (a > b) << '\n';
+    cout << "a <= b: " << (a <= b) << '\n';
+    cout << "a >= b: " << (a >= b) << '\n';
 
     return 0;
 }
