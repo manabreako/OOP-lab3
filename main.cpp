@@ -38,8 +38,7 @@ public:
     }
 
     Fraction(const Fraction& other)
-        : numerator(other.numerator),
-          denominator(other.denominator) {}
+        : numerator(other.numerator), denominator(other.denominator) {}
 
     Fraction& operator++()
     {
@@ -69,6 +68,43 @@ public:
         return old;
     }
 
+    Fraction& operator+=(const Fraction& other)
+    {
+        numerator = numerator * other.denominator
+                  + other.numerator * denominator;
+        denominator *= other.denominator;
+        reduce();
+        return *this;
+    }
+
+    Fraction& operator-=(const Fraction& other)
+    {
+        numerator = numerator * other.denominator
+                  - other.numerator * denominator;
+        denominator *= other.denominator;
+        reduce();
+        return *this;
+    }
+
+    Fraction& operator*=(const Fraction& other)
+    {
+        numerator *= other.numerator;
+        denominator *= other.denominator;
+        reduce();
+        return *this;
+    }
+
+    Fraction& operator/=(const Fraction& other)
+    {
+        if (other.numerator == 0)
+            throw invalid_argument("Деление на ноль!");
+
+        numerator *= other.denominator;
+        denominator *= other.numerator;
+        reduce();
+        return *this;
+    }
+
     friend ostream& operator<<(ostream& out, const Fraction& f)
     {
         out << f.numerator << "/" << f.denominator;
@@ -80,15 +116,23 @@ int main()
 {
     setlocale(LC_ALL, "");
 
-    Fraction d(3, 4);
+    Fraction b(1, 3);
+    Fraction c(1, 2);
 
-    cout << "Исходная дробь: " << d << '\n';
-    cout << "Префиксный ++d: " << ++d << '\n';
-    cout << "Постфиксный d++: " << d++ << '\n';
-    cout << "После d++: " << d << '\n';
-    cout << "Префиксный --d: " << --d << '\n';
-    cout << "Постфиксный d--: " << d-- << '\n';
-    cout << "После d--: " << d << '\n';
+    c += b;
+    cout << "После += : " << c << '\n';
+
+    c = Fraction(1, 2);
+    c -= b;
+    cout << "После -= : " << c << '\n';
+
+    c = Fraction(1, 2);
+    c *= b;
+    cout << "После *= : " << c << '\n';
+
+    c = Fraction(1, 2);
+    c /= b;
+    cout << "После /= : " << c << '\n';
 
     return 0;
 }
