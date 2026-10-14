@@ -2,6 +2,7 @@
 #include <numeric>
 #include <stdexcept>
 #include <cstdlib>
+#include <string>
 #include <clocale>
 
 using namespace std;
@@ -11,6 +12,8 @@ class Fraction
 private:
     int numerator;
     int denominator;
+    mutable int accessCount;
+    static int objectCount;
 
     void reduce()
     {
@@ -29,16 +32,50 @@ private:
     }
 
 public:
-    Fraction() : numerator(0), denominator(1) {}
-    explicit Fraction(int n) : numerator(n), denominator(1) {}
+    Fraction() : numerator(0), denominator(1), accessCount(0)
+    {
+        objectCount++;
+    }
 
-    Fraction(int n, int d) : numerator(n), denominator(d)
+    explicit Fraction(int n) : numerator(n), denominator(1), accessCount(0)
+    {
+        objectCount++;
+    }
+
+    Fraction(int n, int d) : numerator(n), denominator(d), accessCount(0)
     {
         reduce();
+        objectCount++;
     }
 
     Fraction(const Fraction& other)
-        : numerator(other.numerator), denominator(other.denominator) {}
+        : numerator(other.numerator),
+          denominator(other.denominator),
+          accessCount(0)
+    {
+        objectCount++;
+    }
+
+    ~Fraction()
+    {
+        objectCount--;
+    }
+
+    string getValue() const
+    {
+        accessCount++;
+        return to_string(numerator) + "/" + to_string(denominator);
+    }
+
+    int getAccessCount() const
+    {
+        return accessCount;
+    }
+
+    static int getObjectCount()
+    {
+        return objectCount;
+    }
 
     Fraction& operator++()
     {
@@ -116,10 +153,7 @@ public:
                a.denominator == b.denominator;
     }
 
-    friend bool operator!=(const Fraction& a, const Fraction& b)
-    {
-        return !(a == b);
-    }
+    friend bool operator!=(const Fraction& a, const Fraction& b) { return !(a == b); }
 
     friend bool operator<(const Fraction& a, const Fraction& b)
     {
@@ -127,20 +161,9 @@ public:
                1LL * b.numerator * a.denominator;
     }
 
-    friend bool operator>(const Fraction& a, const Fraction& b)
-    {
-        return b < a;
-    }
-
-    friend bool operator<=(const Fraction& a, const Fraction& b)
-    {
-        return !(a > b);
-    }
-
-    friend bool operator>=(const Fraction& a, const Fraction& b)
-    {
-        return !(a < b);
-    }
+    friend bool operator>(const Fraction& a, const Fraction& b) { return b < a; }
+    friend bool operator<=(const Fraction& a, const Fraction& b) { return !(a > b); }
+    friend bool operator>=(const Fraction& a, const Fraction& b) { return !(a < b); }
 
     friend ostream& operator<<(ostream& out, const Fraction& f)
     {
@@ -149,20 +172,18 @@ public:
     }
 };
 
+int Fraction::objectCount = 0;
+
 int main()
 {
     setlocale(LC_ALL, "");
 
-    Fraction a(1, 2);
-    Fraction b(1, 3);
+    const Fraction a(2, 5);
 
-    cout << boolalpha;
-    cout << "a == b: " << (a == b) << '\n';
-    cout << "a != b: " << (a != b) << '\n';
-    cout << "a < b:  " << (a < b) << '\n';
-    cout << "a > b:  " << (a > b) << '\n';
-    cout << "a <= b: " << (a <= b) << '\n';
-    cout << "a >= b: " << (a >= b) << '\n';
+    cout << "Дробь: " << a.getValue() << '\n';
+    cout << "Повторно: " << a.getValue() << '\n';
+    cout << "Количество обращений: " << a.getAccessCount() << '\n';
+    cout << "Количество объектов: " << Fraction::getObjectCount() << '\n';
 
     return 0;
 }
