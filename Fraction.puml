@@ -1,0 +1,54 @@
+@startuml
+
+title UML-диаграмма класса Fraction
+
+class Fraction {
+    - numerator : int
+    - denominator : int
+    - accessCount : int
+    {static} - objectCount : int
+
+    - reduce() : void
+
+    + Fraction()
+    + Fraction(number : int)
+    + Fraction(num : int, den : int)
+    + Fraction(other : Fraction)
+    + ~Fraction()
+
+    + getValue() : string
+    + getAccessCount() : int
+    {static} + getObjectCount() : int
+
+    + operator++() : Fraction&
+    + operator++(int) : Fraction
+    + operator--() : Fraction&
+    + operator--(int) : Fraction
+
+    + operator+=(other : Fraction) : Fraction&
+    + operator-=(other : Fraction) : Fraction&
+    + operator*=(other : Fraction) : Fraction&
+    + operator/=(other : Fraction) : Fraction&
+
+    + operator+(left : Fraction, right : Fraction) : Fraction
+    + operator-(left : Fraction, right : Fraction) : Fraction
+    + operator*(left : Fraction, right : Fraction) : Fraction
+    + operator/(left : Fraction, right : Fraction) : Fraction
+
+    + operator==(a : Fraction, b : Fraction) : bool
+    + operator!=(a : Fraction, b : Fraction) : bool
+    + operator<(a : Fraction, b : Fraction) : bool
+    + operator>(a : Fraction, b : Fraction) : bool
+    + operator<=(a : Fraction, b : Fraction) : bool
+    + operator>=(a : Fraction, b : Fraction) : bool
+
+    + operator<<(out : ostream, f : Fraction) : ostream&
+}
+
+class "main()" as Main {
+    + main() : int
+}
+
+Main ..> Fraction : использует
+
+@enduml
