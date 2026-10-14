@@ -1,8 +1,9 @@
 #include <iostream>
+#include <vector>
+#include <string>
 #include <numeric>
 #include <stdexcept>
 #include <cstdlib>
-#include <string>
 #include <clocale>
 
 using namespace std;
@@ -32,10 +33,7 @@ private:
     }
 
 public:
-    Fraction() : numerator(0), denominator(1), accessCount(0)
-    {
-        objectCount++;
-    }
+    Fraction() : numerator(0), denominator(1), accessCount(0) { objectCount++; }
 
     explicit Fraction(int n) : numerator(n), denominator(1), accessCount(0)
     {
@@ -56,10 +54,7 @@ public:
         objectCount++;
     }
 
-    ~Fraction()
-    {
-        objectCount--;
-    }
+    ~Fraction() { objectCount--; }
 
     string getValue() const
     {
@@ -67,15 +62,8 @@ public:
         return to_string(numerator) + "/" + to_string(denominator);
     }
 
-    int getAccessCount() const
-    {
-        return accessCount;
-    }
-
-    static int getObjectCount()
-    {
-        return objectCount;
-    }
+    int getAccessCount() const { return accessCount; }
+    static int getObjectCount() { return objectCount; }
 
     Fraction& operator++()
     {
@@ -149,8 +137,7 @@ public:
 
     friend bool operator==(const Fraction& a, const Fraction& b)
     {
-        return a.numerator == b.numerator &&
-               a.denominator == b.denominator;
+        return a.numerator == b.numerator && a.denominator == b.denominator;
     }
 
     friend bool operator!=(const Fraction& a, const Fraction& b) { return !(a == b); }
@@ -178,12 +165,98 @@ int main()
 {
     setlocale(LC_ALL, "");
 
-    const Fraction a(2, 5);
+    vector<string> history;
 
-    cout << "Дробь: " << a.getValue() << '\n';
-    cout << "Повторно: " << a.getValue() << '\n';
-    cout << "Количество обращений: " << a.getAccessCount() << '\n';
-    cout << "Количество объектов: " << Fraction::getObjectCount() << '\n';
+    try
+    {
+        Fraction a(1, 2);
+        Fraction b(1, 3);
+
+        cout << "=== КАЛЬКУЛЯТОР ДРОБЕЙ ===\n\n";
+        cout << "a = " << a << ", b = " << b << "\n\n";
+
+        cout << "=== АРИФМЕТИКА ===\n";
+
+        Fraction result = a + b;
+        cout << a << " + " << b << " = " << result << '\n';
+        history.push_back("1/2 + 1/3 = " + result.getValue());
+
+        result = a - b;
+        cout << a << " - " << b << " = " << result << '\n';
+        history.push_back("1/2 - 1/3 = " + result.getValue());
+
+        result = a * b;
+        cout << a << " * " << b << " = " << result << '\n';
+        history.push_back("1/2 * 1/3 = " + result.getValue());
+
+        result = a / b;
+        cout << a << " / " << b << " = " << result << '\n';
+        history.push_back("1/2 / 1/3 = " + result.getValue());
+
+        cout << "\n=== ОПЕРАТОРЫ ПРИСВАИВАНИЯ ===\n";
+
+        Fraction c(1, 2);
+        c += b;
+        cout << "После += : " << c << '\n';
+
+        c = Fraction(1, 2);
+        c -= b;
+        cout << "После -= : " << c << '\n';
+
+        c = Fraction(1, 2);
+        c *= b;
+        cout << "После *= : " << c << '\n';
+
+        c = Fraction(1, 2);
+        c /= b;
+        cout << "После /= : " << c << '\n';
+
+        cout << "\n=== ИНКРЕМЕНТ И ДЕКРЕМЕНТ ===\n";
+
+        Fraction d(3, 4);
+        cout << "Исходная дробь: " << d << '\n';
+        cout << "Префиксный ++d: " << ++d << '\n';
+        cout << "Постфиксный d++: " << d++ << '\n';
+        cout << "После d++: " << d << '\n';
+        cout << "Префиксный --d: " << --d << '\n';
+        cout << "Постфиксный d--: " << d-- << '\n';
+        cout << "После d--: " << d << '\n';
+
+        cout << "\n=== СРАВНЕНИЯ ===\n";
+
+        cout << boolalpha;
+        cout << "a == b: " << (a == b) << '\n';
+        cout << "a != b: " << (a != b) << '\n';
+        cout << "a < b:  " << (a < b) << '\n';
+        cout << "a > b:  " << (a > b) << '\n';
+        cout << "a <= b: " << (a <= b) << '\n';
+        cout << "a >= b: " << (a >= b) << '\n';
+
+        cout << "\n=== EXPLICIT ===\n";
+
+        Fraction whole(5);
+        cout << "Целое число: " << whole << '\n';
+        cout << "a + 2 = " << a + Fraction(2) << '\n';
+
+        cout << "\n=== MUTABLE И CONST ===\n";
+
+        const Fraction constant(2, 5);
+        cout << "Дробь: " << constant.getValue() << '\n';
+        cout << "Дробь повторно: " << constant.getValue() << '\n';
+        cout << "Количество обращений: " << constant.getAccessCount() << '\n';
+
+        cout << "\n=== ИСТОРИЯ ОПЕРАЦИЙ ===\n";
+
+        for (int i = 0; i < static_cast<int>(history.size()); i++)
+            cout << i + 1 << ". " << history[i] << '\n';
+
+        cout << "\nКоличество объектов: "
+             << Fraction::getObjectCount() << '\n';
+    }
+    catch (const exception& e)
+    {
+        cout << "Ошибка: " << e.what() << '\n';
+    }
 
     return 0;
 }
