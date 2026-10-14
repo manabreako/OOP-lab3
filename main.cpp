@@ -1,4 +1,7 @@
 #include <iostream>
+#include <numeric>
+#include <stdexcept>
+#include <cstdlib>
 #include <clocale>
 
 using namespace std;
@@ -9,6 +12,22 @@ private:
     int numerator;
     int denominator;
 
+    void reduce()
+    {
+        if (denominator == 0)
+            throw invalid_argument("Знаменатель не может быть равен нулю!");
+
+        if (denominator < 0)
+        {
+            numerator = -numerator;
+            denominator = -denominator;
+        }
+
+        int divisor = gcd(abs(numerator), denominator);
+        numerator /= divisor;
+        denominator /= divisor;
+    }
+
 public:
     Fraction() : numerator(0), denominator(1) {}
 
@@ -16,7 +35,10 @@ public:
         : numerator(number), denominator(1) {}
 
     Fraction(int num, int den)
-        : numerator(num), denominator(den) {}
+        : numerator(num), denominator(den)
+    {
+        reduce();
+    }
 
     friend ostream& operator<<(ostream& out, const Fraction& f)
     {
@@ -29,13 +51,11 @@ int main()
 {
     setlocale(LC_ALL, "");
 
-    Fraction a;
-    Fraction b(5);
-    Fraction c(1, 2);
+    Fraction a(2, 4);
+    Fraction b(3, -6);
 
     cout << "a = " << a << '\n';
     cout << "b = " << b << '\n';
-    cout << "c = " << c << '\n';
 
     return 0;
 }
