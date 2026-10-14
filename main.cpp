@@ -33,14 +33,19 @@ private:
     }
 
 public:
-    Fraction() : numerator(0), denominator(1), accessCount(0) { objectCount++; }
-
-    explicit Fraction(int n) : numerator(n), denominator(1), accessCount(0)
+    Fraction() : numerator(0), denominator(1), accessCount(0)
     {
         objectCount++;
     }
 
-    Fraction(int n, int d) : numerator(n), denominator(d), accessCount(0)
+    explicit Fraction(int number)
+        : numerator(number), denominator(1), accessCount(0)
+    {
+        objectCount++;
+    }
+
+    Fraction(int num, int den)
+        : numerator(num), denominator(den), accessCount(0)
     {
         reduce();
         objectCount++;
@@ -54,7 +59,10 @@ public:
         objectCount++;
     }
 
-    ~Fraction() { objectCount--; }
+    ~Fraction()
+    {
+        objectCount--;
+    }
 
     string getValue() const
     {
@@ -62,8 +70,15 @@ public:
         return to_string(numerator) + "/" + to_string(denominator);
     }
 
-    int getAccessCount() const { return accessCount; }
-    static int getObjectCount() { return objectCount; }
+    int getAccessCount() const
+    {
+        return accessCount;
+    }
+
+    static int getObjectCount()
+    {
+        return objectCount;
+    }
 
     Fraction& operator++()
     {
@@ -130,27 +145,61 @@ public:
         return *this;
     }
 
-    friend Fraction operator+(Fraction a, const Fraction& b) { return a += b; }
-    friend Fraction operator-(Fraction a, const Fraction& b) { return a -= b; }
-    friend Fraction operator*(Fraction a, const Fraction& b) { return a *= b; }
-    friend Fraction operator/(Fraction a, const Fraction& b) { return a /= b; }
+    friend Fraction operator+(Fraction left, const Fraction& right)
+    {
+        left += right;
+        return left;
+    }
+
+    friend Fraction operator-(Fraction left, const Fraction& right)
+    {
+        left -= right;
+        return left;
+    }
+
+    friend Fraction operator*(Fraction left, const Fraction& right)
+    {
+        left *= right;
+        return left;
+    }
+
+    friend Fraction operator/(Fraction left, const Fraction& right)
+    {
+        left /= right;
+        return left;
+    }
 
     friend bool operator==(const Fraction& a, const Fraction& b)
     {
-        return a.numerator == b.numerator && a.denominator == b.denominator;
+        return a.numerator == b.numerator
+            && a.denominator == b.denominator;
     }
 
-    friend bool operator!=(const Fraction& a, const Fraction& b) { return !(a == b); }
+    friend bool operator!=(const Fraction& a, const Fraction& b)
+    {
+        return !(a == b);
+    }
 
     friend bool operator<(const Fraction& a, const Fraction& b)
     {
-        return 1LL * a.numerator * b.denominator <
-               1LL * b.numerator * a.denominator;
+        return 1LL * a.numerator * b.denominator
+             < 1LL * b.numerator * a.denominator;
     }
 
-    friend bool operator>(const Fraction& a, const Fraction& b) { return b < a; }
-    friend bool operator<=(const Fraction& a, const Fraction& b) { return !(a > b); }
-    friend bool operator>=(const Fraction& a, const Fraction& b) { return !(a < b); }
+    friend bool operator>(const Fraction& a, const Fraction& b)
+    {
+        return b < a;
+    }
+
+    friend bool operator<=(const Fraction& a, const Fraction& b)
+    {
+        return !(a > b);
+    }
+
+    friend bool operator>=(const Fraction& a, const Fraction& b)
+    {
+        return !(a < b);
+    }
 
     friend ostream& operator<<(ostream& out, const Fraction& f)
     {
@@ -196,6 +245,7 @@ int main()
         cout << "\n=== ОПЕРАТОРЫ ПРИСВАИВАНИЯ ===\n";
 
         Fraction c(1, 2);
+
         c += b;
         cout << "После += : " << c << '\n';
 
@@ -214,6 +264,7 @@ int main()
         cout << "\n=== ИНКРЕМЕНТ И ДЕКРЕМЕНТ ===\n";
 
         Fraction d(3, 4);
+
         cout << "Исходная дробь: " << d << '\n';
         cout << "Префиксный ++d: " << ++d << '\n';
         cout << "Постфиксный d++: " << d++ << '\n';
@@ -236,14 +287,20 @@ int main()
 
         Fraction whole(5);
         cout << "Целое число: " << whole << '\n';
+
+        // Fraction x = 5; // Ошибка из-за explicit
+        // cout << a + 2;  // Ошибка из-за explicit
+
         cout << "a + 2 = " << a + Fraction(2) << '\n';
 
         cout << "\n=== MUTABLE И CONST ===\n";
 
         const Fraction constant(2, 5);
+
         cout << "Дробь: " << constant.getValue() << '\n';
         cout << "Дробь повторно: " << constant.getValue() << '\n';
-        cout << "Количество обращений: " << constant.getAccessCount() << '\n';
+        cout << "Количество обращений: "
+             << constant.getAccessCount() << '\n';
 
         cout << "\n=== ИСТОРИЯ ОПЕРАЦИЙ ===\n";
 
