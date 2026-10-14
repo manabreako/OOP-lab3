@@ -40,6 +40,12 @@ public:
         reduce();
     }
 
+    Fraction(const Fraction& other)
+        : numerator(other.numerator),
+          denominator(other.denominator)
+    {
+    }
+
     friend ostream& operator<<(ostream& out, const Fraction& f)
     {
         out << f.numerator << "/" << f.denominator;
@@ -52,10 +58,10 @@ int main()
     setlocale(LC_ALL, "");
 
     Fraction a(2, 4);
-    Fraction b(3, -6);
+    Fraction b(a);
 
-    cout << "a = " << a << '\n';
-    cout << "b = " << b << '\n';
+    cout << "Исходная дробь: " << a << '\n';
+    cout << "Копия дроби: " << b << '\n';
 
     return 0;
 }
